@@ -13,7 +13,7 @@ export function TermiteAlert() {
   }
 
   return (
-    <Alert className="my-4" icon={InfoIcon}>
+    <Alert className="my-4 termite-alert" icon={InfoIcon}>
       <AlertTitle>Herzlich Willkommen bei der neuen Termite! 🎉</AlertTitle>
       <AlertDescription>
         <p className="mt-4">
