@@ -1,4 +1,5 @@
 import "./globals.css";
+import "../../verdigado-styles.css";
 
 import { PostHogProvider } from "@rallly/posthog/client";
 import { Toaster } from "@rallly/ui/sonner";
