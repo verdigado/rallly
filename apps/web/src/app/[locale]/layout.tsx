@@ -1,4 +1,5 @@
 import "./globals.css";
+import "../../verdigado-styles.css";
 
 import { supportedLngs } from "@rallly/languages";
 import { Toaster } from "@rallly/ui/sonner";
