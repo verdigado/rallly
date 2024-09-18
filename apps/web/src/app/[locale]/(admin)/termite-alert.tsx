@@ -28,21 +28,8 @@ export function TermiteAlert() {
           </a>
           .
         </p>
-        <p>
-          Eure bisherigen Umfragen wurden archiviert. Ihr könnt sie noch bis zum
-          15.09.2024{" "}
-          <a
-            className="text-link"
-            href="https://framadate.gruene.verdigado.net/"
-            target="_blank"
-          >
-            hier
-          </a>{" "}
-          einsehen und herunterladen.
-        </p>
         <p className="mt-2">
-          Wir bitten euch, die Daten bei Bedarf zu sichern. Bei Fragen oder
-          Feedback wendet euch gerne an <strong>beteiligung@gruene.de</strong>.
+          Bei Fragen oder Feedback wendet euch gerne an <strong>beteiligung@gruene.de</strong>.
         </p>
         <div>
           <Button
