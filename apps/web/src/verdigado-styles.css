@@ -1,3 +1,10 @@
+@import url('https://netzbegruenung.github.io/webfonts/style.css');
+
+.gruene-type {
+    font-family: "GrueneType", sans-serif;
+    font-style: italic;
+}
+
 /* GENERIC STYLES */
 body {
     color: #003221 !important;
