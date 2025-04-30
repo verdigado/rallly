@@ -4,7 +4,7 @@ import React from "react";
 import { MobileNavigation } from "@/app/[locale]/(admin)/mobile-navigation";
 import { ProBadge } from "@/app/[locale]/(admin)/pro-badge";
 import { Sidebar } from "@/app/[locale]/(admin)/sidebar";
-import { LogoLink } from "@/app/components/logo-link";
+import { LogoLinkTermite } from "@/app/components/logo-link-termite";
 import { PayWallDialog } from "@/components/pay-wall-dialog";
 
 export default async function Layout({
@@ -21,7 +21,9 @@ export default async function Layout({
           )}
         >
           <div className="flex w-full items-center justify-between gap-4">
-            <LogoLink />
+            <LogoLinkTermite />
+            <h1 className="gruene-type text-3xl uppercase">Termite</h1>
+            <div className="flex-grow" />
             <ProBadge />
           </div>
           <Sidebar />
