@@ -22,7 +22,7 @@ i18nInstance
     ),
   );
 
-const lng = "en";
+const lng = process.env.REACT_EMAIL_LANG ?? "en";
 
 const i18nDefaultConfig: InitOptions = {
   lng,
