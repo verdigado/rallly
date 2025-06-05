@@ -7,7 +7,7 @@ import { AlertTriangleIcon, UserIcon } from "lucide-react";
 import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getProviders, signIn, useSession } from "next-auth/react";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 
@@ -40,6 +40,7 @@ export function LoginForm() {
   const [email, setEmail] = React.useState<string>();
   const router = useRouter();
   const callbackUrl = searchParams?.get("callbackUrl") ?? "/";
+  const autoOidcRedirect = searchParams?.get("autoOidcRedirect") ?? '0';
 
   const error = searchParams?.get("error");
 
@@ -105,6 +106,12 @@ export function LoginForm() {
     }
     return res;
   }, [callbackUrl, posthog, providers, router, t]);
+
+  useEffect(() => {
+    if (alternativeLoginMethods.length === 1 && autoOidcRedirect === '1' && !error) {
+      alternativeLoginMethods[0].login();
+    }
+  }, [alternativeLoginMethods, autoOidcRedirect, error]);
 
   if (!providers) {
     return (
