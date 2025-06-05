@@ -55,10 +55,10 @@ export const EmailLayout = ({
                 i18nKey="common_poweredBy"
                 ns="emails"
                 defaults="Powered by <a>{{domain}}</a>"
-                values={{ domain: "rallly.co" }}
+                values={{ domain: "termite.gruene.de" }}
                 components={{
                   a: (
-                    <Link href="https://rallly.co?utm_source=email&utm_medium=transactional" />
+                    <Link href="https://termite.gruene.de/" />
                   ),
                 }}
               />
