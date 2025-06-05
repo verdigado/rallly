@@ -146,93 +146,34 @@ export function LoginForm() {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(async ({ email }) => {
-        const res = await sendVerificationEmail(email);
-
-        if (res?.error) {
-          setError("email", {
-            message: t("userNotFound"),
-          });
-        } else {
-          setEmail(email);
-        }
-      })}
-    >
-      <div className="mb-1 text-2xl font-bold">{t("login")}</div>
-      <p className="mb-4 text-gray-500">
-        {t("stepSummary", {
-          current: 1,
-          total: 2,
-        })}
-      </p>
-      <fieldset className="mb-2.5">
-        <label htmlFor="email" className="mb-1 text-gray-500">
-          {t("email")}
-        </label>
-        <Input
-          className="w-full"
-          id="email"
-          size="lg"
-          error={!!formState.errors.email}
-          autoFocus={true}
-          disabled={formState.isSubmitting}
-          placeholder={t("emailPlaceholder")}
-          {...register("email", { validate: validEmail })}
-        />
-        {formState.errors.email?.message ? (
-          <div className="mt-2 text-sm text-rose-500">
-            {formState.errors.email.message}
+    <div className="flex flex-col gap-2">
+      {error === "OAuthAccountNotLinked" ? (
+        <Alert icon={AlertTriangleIcon} variant="destructive">
+          <AlertTitle>
+            {t("accountNotLinkedTitle", {
+              defaultValue: "Your account cannot be linked to an existing user",
+            })}
+          </AlertTitle>
+          <AlertDescription>
+            {t("accountNotLinkedDescription", {
+              defaultValue:
+                "A user with this email already exists. Please log in using the original method.",
+            })}
+          </AlertDescription>
+        </Alert>
+      ) : null}
+      {alternativeLoginMethods.length > 0 ? (
+        <>
+          <div className="grid gap-2.5">
+            {alternativeLoginMethods.map((method, i) => (
+              <Button size="lg" key={i} onClick={method.login}>
+                {method.icon}
+                {method.name}
+              </Button>
+            ))}
           </div>
-        ) : null}
-      </fieldset>
-      <div className="flex flex-col gap-2">
-        <Button
-          loading={formState.isSubmitting}
-          type="submit"
-          size="lg"
-          variant="primary"
-          className=""
-        >
-          {t("loginWith", {
-            provider: t("email"),
-          })}
-        </Button>
-        {error === "OAuthAccountNotLinked" ? (
-          <Alert icon={AlertTriangleIcon} variant="destructive">
-            <AlertTitle>
-              {t("accountNotLinkedTitle", {
-                defaultValue:
-                  "Your account cannot be linked to an existing user",
-              })}
-            </AlertTitle>
-            <AlertDescription>
-              {t("accountNotLinkedDescription", {
-                defaultValue:
-                  "A user with this email already exists. Please log in using the original method.",
-              })}
-            </AlertDescription>
-          </Alert>
-        ) : null}
-        {alternativeLoginMethods.length > 0 ? (
-          <>
-            <div className="relative my-4">
-              <hr className="border-grey-500 absolute top-1/2 w-full border-t" />
-              <span className="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 transform bg-white px-2 text-center text-xs uppercase text-gray-400">
-                {t("or", { defaultValue: "Or" })}
-              </span>
-            </div>
-            <div className="grid gap-2.5">
-              {alternativeLoginMethods.map((method, i) => (
-                <Button size="lg" key={i} onClick={method.login}>
-                  {method.icon}
-                  {method.name}
-                </Button>
-              ))}
-            </div>
-          </>
-        ) : null}
-      </div>
-    </form>
+        </>
+      ) : null}
+    </div>
   );
 }
