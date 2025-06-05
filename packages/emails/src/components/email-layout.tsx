@@ -40,12 +40,11 @@ export const EmailLayout = ({
         <Container style={containerStyles}>
           <Img
             src={logoUrl}
-            width="32"
             height="32"
             style={{
               marginBottom: 32,
             }}
-            alt="Rallly Logo"
+            alt="Termite Logo"
           />
           {children}
           <Section style={{ marginTop: 32 }}>
