@@ -108,7 +108,7 @@ button.bg-gray-50:active svg {
 
 /* login page body */
 body:has(.mx-auto.max-w-lg) {
-    background: #008939;
+    background: #008939 !important;
 }
 
 /* login page card */
