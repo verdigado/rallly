@@ -19,7 +19,7 @@ export const getEmailClient = (locale?: string) => {
     },
     config: {
       logoUrl: isSelfHosted
-        ? absoluteUrl("/images/rallly-logo-mark.png")
+        ? absoluteUrl("/logo.png")
         : "https://rallly-public.s3.amazonaws.com/images/rallly-logo-mark.png",
       baseUrl: absoluteUrl(),
       domain: absoluteUrl().replace(/(^\w+:|^)\/\//, ""),
