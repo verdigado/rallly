@@ -135,7 +135,7 @@ const ManagePoll: React.FunctionComponent<{
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild={true}>
-          <Button variant="ghost" disabled={disabled}>
+          <Button variant="outline" disabled={disabled}>
             <Icon>
               <SettingsIcon />
             </Icon>
