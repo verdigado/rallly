@@ -30,6 +30,7 @@ const pageIconVariants = cva("inline-flex items-center justify-center", {
       purple:
         "bg-purple-500 text-purple-50 dark:bg-purple-400/10 dark:text-purple-400",
       primary: "bg-primary text-primary-foreground",
+      custom: "bg-[linear-gradient(45deg,#003221,#008939)] text-white",
     },
     size: {
       xs: "size-6 rounded-md [&_svg]:size-3",
@@ -59,7 +60,7 @@ export function PageIcon({
 
 export function SettingsPageIcon() {
   return (
-    <PageIcon color="gray" size="md">
+    <PageIcon color="custom" size="md">
       <SettingsIcon />
     </PageIcon>
   );
@@ -82,7 +83,7 @@ export function SpacesPageIcon() {
 
 export function MembersPageIcon() {
   return (
-    <PageIcon color="gray" size="md">
+    <PageIcon color="custom" size="md">
       <UsersIcon />
     </PageIcon>
   );
@@ -104,7 +105,7 @@ export function HomePageIcon(props: PageIconVariantProps) {
 }
 export function CreatePageIcon() {
   return (
-    <PageIcon color="gray" size="md">
+    <PageIcon color="custom" size="md">
       <PlusIcon />
     </PageIcon>
   );
@@ -112,7 +113,7 @@ export function CreatePageIcon() {
 
 export function PollPageIcon(props: PageIconVariantProps) {
   return (
-    <PageIcon color="purple" size="md" {...props}>
+    <PageIcon color="custom" size="md" {...props}>
       <BarChart2Icon />
     </PageIcon>
   );
@@ -120,7 +121,7 @@ export function PollPageIcon(props: PageIconVariantProps) {
 
 export function EventPageIcon(props: PageIconVariantProps) {
   return (
-    <PageIcon color="rose" size="md" {...props}>
+    <PageIcon color="custom" size="md" {...props}>
       <CalendarIcon />
     </PageIcon>
   );
@@ -128,7 +129,7 @@ export function EventPageIcon(props: PageIconVariantProps) {
 
 export function ProfilePageIcon(props: PageIconVariantProps) {
   return (
-    <PageIcon color="gray" size="md" {...props}>
+    <PageIcon color="custom" size="md" {...props}>
       <UserIcon />
     </PageIcon>
   );
@@ -136,7 +137,7 @@ export function ProfilePageIcon(props: PageIconVariantProps) {
 
 export function PreferencesPageIcon(props: PageIconVariantProps) {
   return (
-    <PageIcon color="gray" size="md" {...props}>
+    <PageIcon color="custom" size="md" {...props}>
       <Settings2Icon />
     </PageIcon>
   );
@@ -144,7 +145,7 @@ export function PreferencesPageIcon(props: PageIconVariantProps) {
 
 export function BillingPageIcon(props: PageIconVariantProps) {
   return (
-    <PageIcon color="gray" size="md" {...props}>
+    <PageIcon color="custom" size="md" {...props}>
       <CreditCardIcon />
     </PageIcon>
   );

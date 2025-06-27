@@ -23,7 +23,7 @@ function Switch({
       nativeButton
       data-slot="switch"
       className={cn(
-        "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full p-[3px] ring-1 ring-button-outline ring-inset transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 data-disabled:cursor-not-allowed data-checked:bg-primary data-unchecked:bg-foreground/10 data-disabled:opacity-50",
+        "peer inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full p-[3px] ring-1 ring-button-outline ring-inset transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-offset-2 data-disabled:cursor-not-allowed data-checked:bg-primary data-unchecked:bg-green-200 data-disabled:opacity-50",
         className,
       )}
       {...props}

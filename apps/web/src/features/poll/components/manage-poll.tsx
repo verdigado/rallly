@@ -123,7 +123,7 @@ const ManagePoll: React.FunctionComponent<{
     <>
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger
-          render={<Button variant="ghost" disabled={disabled} />}
+          render={<Button variant="outline" disabled={disabled} />}
         >
           <span>
             <Trans i18nKey="manage" />
