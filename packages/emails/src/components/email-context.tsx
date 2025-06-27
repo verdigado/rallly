@@ -3,9 +3,7 @@ import { EmailContext } from "../types";
 
 i18nInstance.init({
   ...i18nDefaultConfig,
-  // In email development mode, i18next translations will only work if translation files 
-  // are loaded synchronously. Therefore, this flag must be set to false.
-  initImmediate: false,
+  initImmediate: true,
 });
 
 export const previewEmailContext: EmailContext = {
@@ -14,5 +12,5 @@ export const previewEmailContext: EmailContext = {
   domain: "rallly.co",
   supportEmail: "support@rallly.co",
   i18n: i18nInstance,
-  t: i18nInstance.t,
+  t: i18nInstance.getFixedT("en"),
 };

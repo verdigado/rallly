@@ -15,7 +15,6 @@
   "dependencies": {
     "@aws-sdk/client-ses": "^3.501.0",
     "@aws-sdk/credential-provider-node": "^3.501.0",
-    "@rallly/languages": "*",
     "@react-email/components": "^0.0.14",
     "@react-email/render": "^0.0.12",
     "@vercel/functions": "*",
