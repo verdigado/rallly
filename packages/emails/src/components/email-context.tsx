@@ -9,11 +9,13 @@ i18nInstance.init({
 });
 
 export const previewEmailContext: EmailContext = {
-  logoUrl: "https://d39ixtfgglw55o.cloudfront.net/images/rallly-logo-mark.png",
-  baseUrl: "https://rallly.co",
-  domain: "rallly.co",
-  supportEmail: "support@rallly.co",
+  logoUrl: "https://termite.gruene.de/logo.png",
+  baseUrl: "https://termite.gruene.de",
+  domain: "termite.gruene.de",
+  supportEmail: "support@termite.gruene.de",
   i18n: i18nInstance,
   t: i18nInstance.t,
-  appName: "Rallly",
+  appName: "Termite",
+  primaryColor: "#005437",
+  hideAttribution: true,
 };
