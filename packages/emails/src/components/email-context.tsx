@@ -3,15 +3,19 @@ import type { EmailContext } from "../types";
 
 i18nInstance.init({
   ...i18nDefaultConfig,
-  initImmediate: true,
+  // In email development mode, i18next translations will only work if translation files
+  // are loaded synchronously. Therefore, this flag must be set to false.
+  initImmediate: false,
 });
 
 export const previewEmailContext: EmailContext = {
-  logoUrl: "https://d39ixtfgglw55o.cloudfront.net/images/rallly-logo-mark.png",
-  baseUrl: "https://rallly.co",
-  domain: "rallly.co",
-  supportEmail: "support@rallly.co",
+  logoUrl: "https://termite.gruene.de/logo.png",
+  baseUrl: "https://termite.gruene.de",
+  domain: "termite.gruene.de",
+  supportEmail: "support@termite.gruene.de",
   i18n: i18nInstance,
-  t: i18nInstance.getFixedT("en"),
-  appName: "Rallly",
+  t: i18nInstance.t,
+  appName: "Termite",
+  primaryColor: "#005437",
+  hideAttribution: true,
 };

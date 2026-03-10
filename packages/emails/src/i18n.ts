@@ -1,3 +1,4 @@
+import { supportedLngs } from "@rallly/languages";
 import type { InitOptions } from "i18next";
 import { createInstance } from "i18next";
 import ICU from "i18next-icu";
@@ -16,8 +17,12 @@ i18nInstance
     ),
   );
 
+const lng = process.env.REACT_EMAIL_LANG ?? "de";
+
 const i18nDefaultConfig: InitOptions = {
-  lng: "en",
+  lng,
+  supportedLngs: supportedLngs,
+  preload: [lng, ...(lng === "en" ? [] : ["en"])],
   fallbackLng: "en",
   ns: ["emails"],
   fallbackNS: "emails",
