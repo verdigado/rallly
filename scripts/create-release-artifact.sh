@@ -39,7 +39,11 @@ cp packages/database/prisma.config.ts ./release-artifact/
 echo "🗜️ Compressing the artifact..."
 tar -czf rallly-release.tar.gz -C ./release-artifact .
 
-# 9. Clean up the temporary artifact directory
+# 9. Generate a checksum for the artifact
+echo "🔐 Generating checksum file..."
+sha256sum rallly-release.tar.gz > rallly-release.tar.gz.sha256
+
+# 10. Clean up the temporary artifact directory
 rm -rf ./release-artifact
 
 echo "✅ Release artifact created: rallly-release.tar.gz"

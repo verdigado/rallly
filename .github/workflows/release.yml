@@ -35,7 +35,7 @@ jobs:
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          artifacts: rallly-release.tar.gz
+          artifacts: "rallly-release.tar.gz,rallly-release.tar.gz.sha256"
           generateReleaseNotes: true
           token: ${{ secrets.GITHUB_TOKEN }}
           makeLatest: true
