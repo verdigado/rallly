@@ -4,3 +4,19 @@
     font-family: "GrueneType", sans-serif;
     font-style: italic;
 }
+
+body > div > div.sticky {
+    background-color: #005437;
+    color: white;
+}
+
+body > div > div.sticky button {
+    background: none !important;
+    box-shadow: none !important;
+    color: white !important;
+}
+
+body > div > div.sticky svg {
+    fill: white !important;
+    stroke: white !important;
+}
