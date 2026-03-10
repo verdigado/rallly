@@ -64,7 +64,7 @@ const NotificationsToggle: React.FunctionComponent = () => {
       <TooltipTrigger asChild>
         <Button
           data-testid="notifications-toggle"
-          variant="ghost"
+          variant="outline"
           onClick={async () => {
             if (!user || user.isGuest) {
               router.push(`/login?redirectTo=${encodeURIComponent(pathname)}`);

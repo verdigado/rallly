@@ -27,6 +27,7 @@ import { getTranslation } from "@/i18n/server";
 import { IfFeatureEnabled } from "@/lib/feature-flags/client";
 import { isFeatureEnabled } from "@/lib/feature-flags/server";
 import { PasswordSetupAlert } from "./password-setup-alert";
+import { TermiteAlert } from "./termite-alert";
 
 async function loadData() {
   const [space, user] = await Promise.all([requireSpace(), requireUser()]);
@@ -78,6 +79,9 @@ export default async function Page() {
 
   return (
     <PageContainer>
+      <div className="max-w-4xl">
+        <TermiteAlert />
+      </div>
       <PageHeader>
         <PageTitle>
           <Trans i18nKey="home" defaults="Home" />
