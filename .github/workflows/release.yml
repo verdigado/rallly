@@ -6,21 +6,36 @@ on:
 name: Create Release
 
 jobs:
-  build:
-    name: Create Release
+  build-and-release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Trigger deploy to production
-        run: |
-          curl -X POST -d {} ${{ secrets.DEPLOY_HOOK }}
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
 
-      - name: Create Release
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Create release artifact
+        run: ./scripts/create-release-artifact.sh
+        env:
+          SKIP_ENV_VALIDATION: 1
+          NEXT_PUBLIC_SELF_HOSTED: "true"
+
+      - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          draft: true
+          artifacts: rallly-release.tar.gz
           generateReleaseNotes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
           makeLatest: true
