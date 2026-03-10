@@ -35,15 +35,19 @@ mkdir -p ./release-artifact/prisma
 cp -r packages/database/prisma/* ./release-artifact/prisma
 cp packages/database/prisma.config.ts ./release-artifact/
 
-# 8. Create the compressed tarball
+# 8. Modify prisma.config.ts in the artifact to use the production .env path
+echo "🔧 Modifying prisma.config.ts for production..."
+sed -i 's|../../.env|.env|' ./release-artifact/prisma.config.ts
+
+# 9. Create the compressed tarball
 echo "🗜️ Compressing the artifact..."
 tar -czf rallly-release.tar.gz -C ./release-artifact .
 
-# 9. Generate a checksum for the artifact
+# 10. Generate a checksum for the artifact
 echo "🔐 Generating checksum file..."
 sha256sum rallly-release.tar.gz > rallly-release.tar.gz.sha256
 
-# 10. Clean up the temporary artifact directory
+# 11. Clean up the temporary artifact directory
 rm -rf ./release-artifact
 
 echo "✅ Release artifact created: rallly-release.tar.gz"
