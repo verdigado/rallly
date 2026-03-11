@@ -64,7 +64,7 @@ export const InviteDialog = () => {
           <Trans i18nKey="share" defaults="Share" />
         </Button>
       </DialogTrigger>
-      <DialogContent data-testid="invite-participant-dialog">
+      <DialogContent size="lg" data-testid="invite-participant-dialog">
         <div className="flex">
           <Share2Icon className="size-6 text-primary" />
         </div>
