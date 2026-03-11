@@ -23,9 +23,14 @@ export function getLocaleFromRequest(req: NextRequest) {
 }
 
 export function setLocaleCookie(
+  req: NextRequest,
   res: NextResponse,
   locale: string,
 ) {
+  if (req.cookies.get(LOCALE_COOKIE_NAME)) {
+    return;
+  }
+
   res.cookies.set(LOCALE_COOKIE_NAME, locale, {
     path: "/",
   });
