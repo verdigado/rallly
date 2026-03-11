@@ -27,7 +27,7 @@ cp -r apps/web/.next/static ./release-artifact/apps/web/.next/static
 
 # 6. Copy the public folder
 echo "📁 Copying public assets..."
-cp -r apps/web/public ./release-artifact/apps/web/public
+cp -r apps/web/public/. ./release-artifact/apps/web/public
 
 # 7. Copy the Prisma schema for migrations
 echo "🗄️ Copying Prisma schema and config..."
