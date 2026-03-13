@@ -23,14 +23,8 @@ jobs:
           node-version: "24"
           cache: "pnpm"
 
-      - name: Install dependencies
-        run: pnpm install
-
       - name: Create release artifact
         run: ./scripts/create-release-artifact.sh
-        env:
-          SKIP_ENV_VALIDATION: 1
-          NEXT_PUBLIC_SELF_HOSTED: "true"
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
