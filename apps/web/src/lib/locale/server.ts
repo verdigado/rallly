@@ -33,6 +33,5 @@ export function setLocaleCookie(
 
   res.cookies.set(LOCALE_COOKIE_NAME, locale, {
     path: "/",
-    httpOnly: false,
   });
 }
