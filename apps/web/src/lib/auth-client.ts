@@ -22,6 +22,35 @@ export const authClient = createAuthClient({
 });
 
 export async function signOut() {
+  let logoutUrl: string | null = null;
+
+  try {
+    // Attempt to get a federated logout URL from the server *before* signing out
+    const res = await fetch(absoluteUrl("/api/auth/oidc-logout"));
+
+    if (res.ok) {
+      const data = await res.json();
+      // If a logout URL is provided, store it for later
+      if (data.logoutUrl) {
+        logoutUrl = data.logoutUrl;
+      }
+    }
+  } catch (error) {
+    console.error(
+      "Failed to fetch OIDC logout URL, proceeding with local logout.",
+      error,
+    );
+  }
+
   await authClient.signOut();
   posthog?.reset();
+
+  // Redirect to the OIDC provider if a URL was fetched
+  if (logoutUrl) {
+    window.location.href = logoutUrl;
+    return;
+  }
+
+  // Fallback for non-OIDC or if the API fails: redirect to the login page
+  window.location.href = absoluteUrl("/login");
 }
