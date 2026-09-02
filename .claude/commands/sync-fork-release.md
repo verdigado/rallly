@@ -44,16 +44,21 @@ send `$TOKEN` to any host other than `api.github.com`/`github.com` for
    Only `main`. Never push anything else here.
 3. Get upstream's latest release: `GET https://api.github.com/repos/lukevella/rallly/releases/latest` (unauthenticated). Note its tag, e.g. `v4.13.1`.
 4. List existing release branches: `GET https://api.github.com/repos/verdigado/rallly/git/matching-refs/heads/release/` (send `Authorization: Bearer $TOKEN` since this is a verdigado/rallly read) and find the highest `release/<semver>-fork` branch.
-5. If the highest existing release branch's `<semver>` already equals or exceeds upstream's latest tag: **stop here, silently**. No branch to create, nothing to post — do not open an issue or comment just to say "nothing changed." A quiet no-op is a successful run.
-6. Otherwise, continue to Phase 2 with `<upstream_semver>` = the new tag (e.g. `4.13.1`) and `<upstream_commit>` = that release's target commit.
+5. Check whether that highest release branch has **any** `<semver>-fork.N` tag pointing into it (`GET /repos/verdigado/rallly/git/matching-refs/tags/<semver>-fork.`). **Untagged means unfinished**, regardless of how far behind or ahead upstream now is:
+   - **Untagged** → this release is still blocked on something from a prior run (unresolved conflicts, or a run that stopped before tagging). Resume Phase 2 against this **same** `release/<semver>-fork` and `<upstream_semver>` — do not cut a newer release branch even if upstream has moved on further in the meantime. Finish one release before starting the next.
+   - **Tagged** → that release is fully done. Compare its `<semver>` against upstream's latest tag from step 3. Equal or ahead → **stop here, silently** (no branch to create, nothing to post — a quiet no-op is a successful run). Behind → continue to Phase 2 with `<upstream_semver>` = upstream's new tag and `<upstream_commit>` = that release's target commit, to cut a **new** release branch.
 
 ## Phase 2 — Full workflow (only when Phase 1 found something new)
 
 ### 2a. Cut the release branch
 
-Create `release/<upstream_semver>-fork` from `<upstream_commit>` and push it
-(same `http.extraheader` auth as above). This is a protected branch push of a
-brand new branch, not a force-push — that's expected and fine.
+**Only when resuming an in-progress release** (Phase 1 found it untagged),
+skip this step — the branch already exists, use it as-is.
+
+Otherwise, create `release/<upstream_semver>-fork` from `<upstream_commit>`
+and push it (same `http.extraheader` auth as above). This is a protected
+branch push of a brand new branch, not a force-push — that's expected and
+fine.
 
 ### 2b. Find the branches to carry forward
 
@@ -78,7 +83,9 @@ number.
 
 ### 2c. Rebase, self-review, merge — per branch
 
-For each branch from 2b:
+For each branch from 2b: if resuming an in-progress release and this
+branch's PR already merged into `release/<upstream_semver>-fork` on a prior
+run, skip it — don't re-rebase or re-merge something already done. Otherwise:
 
 1. Rebase it onto the new `release/<upstream_semver>-fork`.
 2. **Clean rebase:**
@@ -92,9 +99,23 @@ For each branch from 2b:
    - Open the PR as a **draft** — do not merge it.
    - Note it in the Phase 2 summary (2e). Move on to the next branch; one blocked branch must never stop the others.
 
-### 2d. Tag
+### 2d. Tag — only if every branch from 2b actually merged
 
-Once all cleanly-mergeable branches are merged into `release/<upstream_semver>-fork`, tag it:
+**Do not tag unless every branch from 2b ended this run merged into
+`release/<upstream_semver>-fork` — zero open or draft PRs remaining against
+it.** A tag is a claim that this release works; it also drives CI
+(`docker-image.yml`, `release.yml` both trigger on tag push), so tagging a
+release that's still missing a customization — including, concretely, a
+release-automation customization like #48 that touches the CI workflow
+itself — can push a tag whose build doesn't reflect what was intended, and
+CI will burn a cycle on it either way.
+
+If anything from 2b is still open/draft: **skip tagging entirely** this run.
+Say so explicitly in the Phase 2f summary, name which branches are blocking
+it, and note that this release stays untagged until a human resolves them
+(a later run will pick this same release back up per Phase 1 step 5).
+
+If everything merged cleanly: tag it —
 - First fork release of this upstream version: `<upstream_semver>-fork.1`
 - A fix re-run on an already-tagged release branch: increment `.n`
 
@@ -127,14 +148,19 @@ in this whole process (it's what actually triggers a production deploy).
 
 Post one summary — as a comment on issue #64, or a new issue if that one's
 closed — stating:
-- The new tag that was cut.
+- Whether a tag was cut this run, and which one — or, if 2d skipped tagging,
+  say so explicitly and name what's still blocking it.
 - Which branches merged cleanly (self-reviewed, no human involved).
 - Which branches are stuck as draft PRs needing manual conflict resolution (link them).
 - Which issues got an obsolescence-check comment this run, if any.
-- The explicit next step for a human: bump `pillars/latest-version/rallly.sls` to `<upstream_semver>-fork.<n>` to deploy.
+- The explicit next step for a human: if a tag was cut, bump
+  `pillars/latest-version/rallly.sls` to `<upstream_semver>-fork.<n>` to
+  deploy; if not, resolve the blocking draft PR(s) — the next run will pick
+  this same release back up.
 
 ## Guardrails (apply throughout, not just where mentioned above)
 
+- **Never tag a release branch that still has any open or draft PR against it from 2b** — a tag drives real CI (image build, release draft) and implies the release is complete and working, not partially assembled.
 - Never push to `main` except the plain fast-forward sync from upstream in Phase 1 step 2.
 - Never touch anything outside the verdigado/rallly repo — the App installation structurally can't reach anywhere else, keep it that way (never widen its install).
 - Never force-push over a branch that still has unresolved conflicts.
