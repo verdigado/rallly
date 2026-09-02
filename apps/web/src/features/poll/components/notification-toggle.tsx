@@ -65,7 +65,7 @@ export function NotificationToggle() {
       <TooltipTrigger
         render={
           <Button
-            variant="ghost"
+            variant="outline"
             size="icon"
             aria-pressed={poll.muted}
             aria-label={
