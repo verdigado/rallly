@@ -52,34 +52,6 @@ export const refreshInstanceLicenseAction = adminActionClient
         };
       }
 
-      const { data } = await licenseManager.validateLicenseKey({
-        key: instanceLicense.licenseKey,
-      });
-
-      if (!data) {
-        throw new AppError({
-          code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to validate license",
-        });
-      }
-
-      await prisma.instanceLicense.update({
-        where: {
-          licenseKey: instanceLicense.licenseKey,
-        },
-        data: {
-          licenseeName: data.licenseeName,
-          licenseeEmail: data.licenseeEmail,
-          issuedAt: data.issuedAt,
-          expiresAt: data.expiresAt,
-          seats: data.seats,
-          type: data.type,
-          whiteLabelAddon: data.whiteLabelAddon,
-        },
-      });
-
-      updateTag(INSTANCE_LICENSE_TAG);
-
       return {
         success: true,
         message: "License refreshed successfully",
