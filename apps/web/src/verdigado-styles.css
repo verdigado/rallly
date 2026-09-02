@@ -1,22 +1,22 @@
-@import url('https://netzbegruenung.github.io/webfonts/style.css');
+@import url("https://netzbegruenung.github.io/webfonts/style.css");
 
 .gruene-type {
-    font-family: "GrueneType", sans-serif;
-    font-style: italic;
+  font-family: "GrueneType", sans-serif;
+  font-style: italic;
 }
 
 body > div > div.sticky {
-    background-color: #005437;
-    color: white;
+  background-color: #005437;
+  color: white;
 }
 
 body > div > div.sticky button {
-    background: none !important;
-    box-shadow: none !important;
-    color: white !important;
+  background: none !important;
+  box-shadow: none !important;
+  color: white !important;
 }
 
 body > div > div.sticky svg {
-    fill: white !important;
-    stroke: white !important;
+  fill: white !important;
+  stroke: white !important;
 }
