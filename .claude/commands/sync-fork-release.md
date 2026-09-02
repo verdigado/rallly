@@ -65,8 +65,16 @@ usual `feature/<n>-<slug>`). Instead:
 GET /repos/verdigado/rallly/issues?labels=Maintained%20Customization&state=open
 ```
 
-For each issue, find its linked branch (issue body/comments, or a linked PR)
-— this is the authoritative list, not the branch namespace.
+For each issue, resolve its branch by matching the issue number as a token
+inside a branch name (any prefix — `feature/62-...`, `feat/62-...`,
+`bug/62-...` all count), not by parsing the issue body/comments or looking
+for a linked PR: in practice these issues don't mention their branch in text,
+and GitHub's own linked-branch relationship isn't set on them either (checked
+via the issue timeline API — no such event). Fetch
+`GET /repos/verdigado/rallly/branches` and match `<issue-number>-` against
+each branch name. Flag (don't silently drop) any open Maintained-Customization
+issue with no matching branch, and any branch matching no open issue's
+number.
 
 ### 2c. Rebase, self-review, merge — per branch
 
