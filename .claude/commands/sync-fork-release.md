@@ -208,20 +208,31 @@ not by picking a side mechanically:
    - Never claim a visual or behavioral check passed without having actually
      performed it this run.
 
-**4. Merge or escalate:**
-   - Validated (checks pass, and any required visual/behavioral comparison
-     actually confirms the issue's documented outcome still holds): push,
-     open a PR against `release/<upstream_semver>-fork`, merge it via `PUT
-     /repos/verdigado/rallly/pulls/<number>/merge`. **Do not wait for a human
-     approval** — the PR exists for the audit trail, not as a gate. In the PR
-     description, say what was resolved and how it was validated (e.g. "diff
-     confirmed against the sidenav box-shadow reference in #41").
+**4. Wait for CI, then merge or escalate:**
+   - Locally validated (checks pass, and any required visual/behavioral
+     comparison actually confirms the issue's documented outcome still
+     holds): push, open (or update) a PR against
+     `release/<upstream_semver>-fork` — CI only runs once the commit reaches
+     GitHub (`ci.yml` triggers on PRs into `release/**`).
+   - **Poll `GET /repos/verdigado/rallly/commits/<head-sha>/check-runs`**
+     every ~30s until every returned run reports `status: completed` (cap
+     the wait at ~20 minutes — the docker-smoke-test and integration-tests
+     jobs are the slow ones).
+   - All runs `conclusion` in `success`/`neutral`/`skipped`: merge via `PUT
+     /repos/verdigado/rallly/pulls/<number>/merge`. **Do not wait for a
+     human approval** — the PR exists for the audit trail, not as a gate. In
+     the PR description, say what was resolved, how it was validated, and
+     that CI passed.
+   - Any run `failure`/`cancelled`/`timed_out`, or nothing finishes within
+     the wait cap: **do not merge.** CI is a hard precondition, not optional
+     — treat this exactly like any other blocked case below.
    - Still blocked (hard i18n exception hit, genuinely ambiguous resolution,
-     or a check that fails and can't be fixed with real further effort): push
-     the best-effort branch state, open/update the PR as a **draft** — do not
-     merge it — and explain specifically what was tried and why it's still
-     blocked, not just "conflict." Note it in the Phase 2 summary (2e). Move
-     on to the next branch; one blocked branch must never stop the others.
+     a local check that fails and can't be fixed with real further effort,
+     or CI red/stuck per above): push the best-effort branch state,
+     open/update the PR as a **draft** — do not merge it — and explain
+     specifically what was tried and why it's still blocked, not just
+     "conflict" or "CI failed." Note it in the Phase 2 summary (2e). Move on
+     to the next branch; one blocked branch must never stop the others.
 
 ### 2d. Tag — only if every branch from 2b actually merged
 
@@ -289,6 +300,7 @@ closed — stating:
 - Never touch anything outside the verdigado/rallly repo — the App installation structurally can't reach anywhere else, keep it that way (never widen its install).
 - Never push a branch that still has leftover conflict markers or an otherwise broken/half-merged state — a pushed branch (merged or draft) must always be a real, complete attempt, not a checkpoint mid-resolution.
 - In a translation/locale file conflict, only ever reapply values the customization's own commit already set — never invent a translation or touch a Crowdin-owned key, and never run `i18n:sync --sync-all` (2c step 2).
+- **Never merge a branch's PR before its CI checks (`ci.yml`, which runs on `release/**` too) have completed green** — CI is a hard precondition alongside local self-review, never a substitute for it or something optional under time pressure (2c step 4).
 - Never claim a visual or behavioral validation passed without actually having performed it this run (a running dev server and a real screenshot comparison, or actually tracing the behavior) — "the diff looks right" is not a substitute.
 - Never auto-close an issue, strip a label, or delete a branch based on the obsolescence check.
 - Effort spent resolving a conflict is not itself a reason to keep going — escalate (2c step 4) once a genuinely ambiguous call or a hard exception is hit, not just when it gets time-consuming; conversely, don't escalate early just because the first attempt didn't work.
