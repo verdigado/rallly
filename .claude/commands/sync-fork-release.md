@@ -108,12 +108,24 @@ view them), before attempting a resolution.
 not by picking a side mechanically:
    - Work out, from the issue's documented intent, which side should win for
      each conflicting hunk, or how to reconcile both.
-   - **Hard exception, no effort level overrides this:** never hand-resolve a
-     conflict inside a translation/locale file (`public/locales/**`,
-     `packages/emails/locales/**`, any `*.json` under an i18n directory).
-     Per CLAUDE.md, those are owned by `pnpm i18n:scan`/`i18n:sync` tooling,
-     not manual edits — a conflict there always escalates (step 4), no matter
-     how simple it looks.
+   - **Hard exception for translation/locale files** (`public/locales/**`,
+     `packages/emails/locales/**`, any `*.json` under an i18n directory) —
+     narrow, not absolute: CLAUDE.md's "never hand-edit these, `pnpm
+     i18n:scan`/`i18n:sync` owns them" rule protects the upstream
+     English-source → Crowdin pipeline, which only applies to keys Crowdin
+     actually owns. The distinction that matters is *inventing a translation*
+     vs. *reapplying one that already exists*: if every conflicting key in
+     the hunk is one the customization's own commit already set (i.e. you're
+     restoring a value this fork already decided on, not writing new copy),
+     resolve it exactly like any other conflict — keep the fork's value,
+     take upstream's value for keys the customization never touched. If even
+     one conflicting key is Crowdin-owned (the customization never set it),
+     or resolving it would mean deciding what a translation *should* say
+     rather than which already-existing value wins, that still escalates
+     (step 4), no exceptions. Never run `i18n:sync --sync-all`. A fork-custom
+     key with no current upstream counterpart at all (its feature looks
+     removed) is safest left in place, not deleted — mention it in the run
+     summary as possibly dead rather than deciding either way.
    - A conflict confined to a lockfile (`pnpm-lock.yaml`) or other generated
      output can just be regenerated (`pnpm install`) rather than merged by hand.
    - **Needing to write new code — not just re-apply an existing diff — is
@@ -285,7 +297,7 @@ closed — stating:
 - Never push to `main` except the plain fast-forward sync from upstream in Phase 1 step 2.
 - Never touch anything outside the verdigado/rallly repo — the App installation structurally can't reach anywhere else, keep it that way (never widen its install).
 - Never push a branch that still has leftover conflict markers or an otherwise broken/half-merged state — a pushed branch (merged or draft) must always be a real, complete attempt, not a checkpoint mid-resolution.
-- Never hand-resolve a conflict in a translation/locale file — that exception in 2c step 2 has no effort-level override.
+- In a translation/locale file conflict, only ever reapply values the customization's own commit already set — never invent a translation or touch a Crowdin-owned key, and never run `i18n:sync --sync-all` (2c step 2).
 - Never claim a visual or behavioral validation passed without actually having performed it this run (a running dev server and a real screenshot comparison, or actually tracing the behavior) — "the diff looks right" is not a substitute.
 - Never auto-close an issue, strip a label, or delete a branch based on the obsolescence check.
 - Effort spent resolving a conflict is not itself a reason to keep going — escalate (2c step 4) once a genuinely ambiguous call or a hard exception is hit, not just when it gets time-consuming; conversely, don't escalate early just because the first attempt didn't work.
