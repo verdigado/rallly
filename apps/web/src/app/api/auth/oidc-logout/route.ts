@@ -1,10 +1,10 @@
-import { prisma } from "@rallly/database";
 import { logger } from "@rallly/logger";
 import { absoluteUrl } from "@rallly/utils/absolute-url";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { env } from "@/env";
+import { getOidcAccountForUser } from "@/features/auth/data";
 import authLib from "@/lib/auth";
 
 export async function GET() {
@@ -24,12 +24,7 @@ export async function GET() {
       return new NextResponse("Unauthorized", { status: 401 });
     }
 
-    const oidcAccount = await prisma.account.findFirst({
-      where: {
-        userId: session.user.id,
-        provider: "oidc",
-      },
-    });
+    const oidcAccount = await getOidcAccountForUser(session.user.id);
 
     const idToken = oidcAccount?.id_token;
 
