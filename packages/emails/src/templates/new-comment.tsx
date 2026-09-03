@@ -4,6 +4,7 @@ import { Trans } from "react-i18next/TransWithoutContext";
 import { resolveChrome } from "../chrome";
 import { PoweredBy } from "../components/powered-by";
 import { previewChrome } from "../components/preview-chrome";
+import { previewLocale } from "../components/preview-locale";
 import {
   Body,
   Button,
@@ -138,7 +139,7 @@ NewCommentEmail.PreviewProps = {
     "Hi everyone! I can make most of these times work, but Tuesday afternoon would be best for me.\nLooking forward to it!",
   pollUrl: "https://rallly.co",
   disableNotificationsUrl: "https://rallly.co",
-  locale: "en",
+  locale: previewLocale,
   chrome: previewChrome,
 } as NewCommentEmailProps;
 

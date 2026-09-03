@@ -4,6 +4,7 @@ import { Trans } from "react-i18next/TransWithoutContext";
 import { resolveChrome } from "../chrome";
 import { PoweredBy } from "../components/powered-by";
 import { previewChrome } from "../components/preview-chrome";
+import { previewLocale } from "../components/preview-locale";
 import {
   Body,
   Container,
@@ -105,7 +106,7 @@ async function ChangeEmailEmail({
 
 ChangeEmailEmail.PreviewProps = {
   code: "123456",
-  locale: "en",
+  locale: previewLocale,
   chrome: previewChrome,
 } as ChangeEmailEmailProps;
 

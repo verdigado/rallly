@@ -4,6 +4,7 @@ import { Trans } from "react-i18next/TransWithoutContext";
 import { resolveChrome } from "../chrome";
 import { PoweredBy } from "../components/powered-by";
 import { previewChrome } from "../components/preview-chrome";
+import { previewLocale } from "../components/preview-locale";
 import {
   Body,
   Button,
@@ -156,7 +157,7 @@ NewParticipantEmail.PreviewProps = {
   title: "Untitled Poll",
   pollUrl: "https://rallly.co",
   disableNotificationsUrl: "https://rallly.co",
-  locale: "en",
+  locale: previewLocale,
   chrome: previewChrome,
 } as NewParticipantEmailProps;
 
