@@ -83,19 +83,11 @@ number.
 
 ### 2c. Rebase, resolve, self-review, merge — per branch
 
-**Before rebasing each branch, sync the local `release/<upstream_semver>-fork`
-ref from origin first**
-(`git fetch https://github.com/verdigado/rallly.git release/<upstream_semver>-fork:release/<upstream_semver>-fork --force`).
-Every merge in this workflow happens through the REST API, which only
-updates the ref on GitHub — a local branch ref never updates itself just
-because you merged a PR through the API. Rebasing branch N+1 onto a local
-ref that's still sitting at wherever the release branch was cut from (not
-reflecting branch N's merge moments ago, or an even older prior run) won't
-usually break anything, because different Maintained-Customization branches
-normally touch disjoint files — but the one time two branches *do* touch the
-same file, a stale local ref means a real conflict goes undetected instead
-of surfacing where it should. Re-sync before every rebase in this loop, not
-just once at the start of Phase 2.
+**Before rebasing each branch, re-fetch the local `release/<upstream_semver>-fork`
+ref** (`git fetch https://github.com/verdigado/rallly.git release/<upstream_semver>-fork:release/<upstream_semver>-fork --force`) —
+merges happen via the REST API, which doesn't update local refs, so without
+this a later branch in the loop can rebase against a stale copy and miss a
+real conflict against one merged moments ago.
 
 For each branch from 2b: if resuming an in-progress release and this
 branch's PR already merged into `release/<upstream_semver>-fork` on a prior
