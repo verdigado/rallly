@@ -110,9 +110,25 @@ not by picking a side mechanically:
      how simple it looks.
    - A conflict confined to a lockfile (`pnpm-lock.yaml`) or other generated
      output can just be regenerated (`pnpm install`) rather than merged by hand.
-   - If, after actually engaging with the issue's intent, the correct
-     resolution is still genuinely ambiguous — not just effortful — that's a
-     legitimate reason to escalate (step 4), not a failure of effort.
+   - **Needing to write new code — not just re-apply an existing diff — is
+     not itself a reason to escalate.** If a customization's supporting piece
+     was deleted or restructured (not just moved), investigate what it would
+     take to rebuild the same behavior before concluding it's too hard: check
+     whether upstream now does this natively (then it's an obsolescence
+     candidate, 2e — flag, don't rebuild), and whether the pieces needed to
+     reconstruct it still exist elsewhere in the codebase. Concrete case:
+     issue #62's OIDC logout customization needs a backend route
+     (`/api/auth/oidc-logout`) that was deleted, but everything it needs
+     (the OIDC discovery document's `end_session_endpoint`, and the
+     provider's `idToken` that Better Auth's `generic-oauth` plugin already
+     stores on the linked account) still exists — this is real work, but a
+     bounded, well-defined rebuild, not ambiguity. That's still a "resolve
+     it" case, not an escalation.
+   - If, after actually engaging with the issue's intent — including
+     checking whether the pieces to rebuild a missing capability actually
+     exist — the correct resolution is still genuinely unclear (not just
+     effortful, and not just "requires writing more code than a one-line
+     fix"), that's a legitimate reason to escalate (step 4).
 
 **3. Self-review — validate against the issue's own documented outcome, not just that the code compiles:**
    - Always: `pnpm check`, `pnpm type-check`, `pnpm test:unit`, and read the
