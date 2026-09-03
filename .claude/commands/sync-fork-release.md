@@ -121,14 +121,52 @@ not by picking a side mechanically:
    - **If the issue documents a visual/UI outcome** (screenshots, described
      visual states — most front-end customizations will): stand up a real
      local instance (`pnpm docker:up`, `pnpm db:reset` if the schema
-     changed, `pnpm dev`) and capture the actual rendered state of the
-     affected surface(s) with Playwright (`npx playwright screenshot <url>
-     <file>` is enough for a single view; install browsers first with `npx
-     playwright install chromium` if missing). Compare what you captured
-     against the issue's own reference screenshots, side by side, visually —
-     this is the real check; "the diff looks plausible" is not a substitute
-     for seeing the rendered result. Tear the local instance down afterward
-     (`pnpm docker:down` or equivalent) — don't leave it running.
+     changed, `pnpm dev` against the **real** `apps/web/.env`, not
+     `.env.test`) and capture the actual rendered state of the affected
+     surface(s) with Playwright (`npx playwright screenshot <url> <file>` is
+     enough for a single view; install browsers first with `npx playwright
+     install chromium` if missing). Compare what you captured against the
+     issue's own reference screenshots, side by side, visually — this is the
+     real check; "the diff looks plausible" is not a substitute for seeing
+     the rendered result. Tear the local instance down afterward (`pnpm
+     docker:down`, plus the Keycloak container below) — don't leave anything
+     running.
+   - **Logging in for this uses real OIDC via a throwaway Keycloak, not a
+     shortcut.** `apps/web/.env` has `EMAIL_LOGIN_ENABLED=false` with OIDC as
+     the only method — a real user never sees a login page at all (`/login`
+     shows a brief spinner then redirects straight to the IdP; see
+     `apps/web/src/app/[locale]/(auth)/login/page.tsx`). Don't switch to
+     `.env.test`'s email-OTP login to dodge this — it would validate a login
+     mechanism nobody actually uses. Instead, before `pnpm dev`, bring up a
+     disposable Keycloak matching the app's existing OIDC config:
+     - Read `OIDC_DISCOVERY_URL`, `OIDC_CLIENT_ID`, `OIDC_CLIENT_SECRET`,
+       `OIDC_NAME_CLAIM_PATH`, and `NEXT_PUBLIC_BASE_URL` straight out of
+       `apps/web/.env` — don't invent new values, match what the app already
+       expects (currently: realm `gruenes-netz`, client `rallly`, on port
+       `8080`, per the discovery URL's path).
+     - Start it with the app's own values baked into a realm import, e.g.:
+       ```bash
+       docker run -d --name fork-sync-keycloak -p 8080:8080 \
+         -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin \
+         -v /tmp/fork-sync-realm.json:/opt/keycloak/data/import/realm.json:ro \
+         quay.io/keycloak/keycloak:latest start-dev --import-realm
+       ```
+       where `/tmp/fork-sync-realm.json` is generated at run time (realm
+       name and client id/secret from `.env`, `standardFlowEnabled: true`,
+       `redirectUris` including `<NEXT_PUBLIC_BASE_URL>/api/auth/callback/oidc`
+       — that path comes from Better Auth's `genericOAuth` plugin config,
+       `providerId: "oidc"`, in `apps/web/src/lib/auth.ts` (verified against
+       the actual redirect Better Auth sends — don't trust the plugin name
+       to imply the path), plus one test
+       user with a known username/password and `emailVerified: true` for
+       Playwright to actually log in as.
+     - Drive the real flow: navigate to `/login`, follow the redirect to
+       Keycloak, fill in the test user's credentials on Keycloak's own login
+       form, let it redirect back — this is what genuinely exercises OIDC,
+       not a bypass of it.
+     - `docker rm -f fork-sync-keycloak` when done, alongside the rest of the
+       teardown. Nothing about this — the container, the realm file, the
+       test user — persists between runs or gets committed anywhere.
    - **If the issue documents a behavioral/flow outcome** that can't be
      screenshotted (e.g. an auth redirect flow): validate by tracing the
      logic against the issue's description and any existing tests. If real
