@@ -109,23 +109,14 @@ not by picking a side mechanically:
    - Work out, from the issue's documented intent, which side should win for
      each conflicting hunk, or how to reconcile both.
    - **Hard exception for translation/locale files** (`public/locales/**`,
-     `packages/emails/locales/**`, any `*.json` under an i18n directory) —
-     narrow, not absolute: CLAUDE.md's "never hand-edit these, `pnpm
-     i18n:scan`/`i18n:sync` owns them" rule protects the upstream
-     English-source → Crowdin pipeline, which only applies to keys Crowdin
-     actually owns. The distinction that matters is *inventing a translation*
-     vs. *reapplying one that already exists*: if every conflicting key in
-     the hunk is one the customization's own commit already set (i.e. you're
-     restoring a value this fork already decided on, not writing new copy),
-     resolve it exactly like any other conflict — keep the fork's value,
-     take upstream's value for keys the customization never touched. If even
-     one conflicting key is Crowdin-owned (the customization never set it),
-     or resolving it would mean deciding what a translation *should* say
-     rather than which already-existing value wins, that still escalates
-     (step 4), no exceptions. Never run `i18n:sync --sync-all`. A fork-custom
-     key with no current upstream counterpart at all (its feature looks
-     removed) is safest left in place, not deleted — mention it in the run
-     summary as possibly dead rather than deciding either way.
+     `packages/emails/locales/**`, i18n `*.json`) — narrowed: CLAUDE.md's
+     "don't hand-edit, `i18n:scan`/`i18n:sync` owns these" rule protects
+     Crowdin-owned keys, not values this fork already decided on. Resolve
+     directly only when every conflicting key is one the customization's own
+     commit already set (reapplying, not inventing); any Crowdin-owned key
+     in the mix still escalates (step 4). Never run `i18n:sync --sync-all`.
+     A fork-owned key with no current upstream counterpart: keep it, flag as
+     possibly dead in the summary rather than deleting it.
    - A conflict confined to a lockfile (`pnpm-lock.yaml`) or other generated
      output can just be regenerated (`pnpm install`) rather than merged by hand.
    - **Needing to write new code — not just re-apply an existing diff — is
