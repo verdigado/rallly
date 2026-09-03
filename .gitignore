@@ -50,5 +50,12 @@ next-env.d.ts
 # Claude worktrees
 .claude/worktrees
 .claude/settings.local.json
+
+# pnpm falls back to a project-local store when it detects the project and
+# the default global store are on different filesystems/devices (no hardlink
+# support) — happens in this devcontainer since /workspaces is a separate
+# mount from $HOME. Configure store-dir explicitly instead of relying on
+# this, but ignore it defensively in case it reappears.
+.pnpm-store
 # Radix -> Base UI migration reports (local skill state)
 .migration/
