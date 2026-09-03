@@ -13,6 +13,7 @@ import { Trans } from "react-i18next/TransWithoutContext";
 import { resolveChrome } from "../chrome";
 import { PoweredBy } from "../components/powered-by";
 import { previewChrome } from "../components/preview-chrome";
+import { previewLocale } from "../components/preview-locale";
 import {
   Body,
   borderColor,
@@ -134,7 +135,7 @@ EventCanceledEmail.PreviewProps = {
   dow: "Fri",
   date: "Friday, 12th June 2020",
   time: "6:00 PM to 11:00 PM BST",
-  locale: "en",
+  locale: previewLocale,
   chrome: previewChrome,
 } as EventCanceledEmailProps;
 

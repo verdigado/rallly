@@ -4,6 +4,7 @@ import { Trans } from "react-i18next/TransWithoutContext";
 import { resolveChrome } from "../chrome";
 import { PoweredBy } from "../components/powered-by";
 import { previewChrome } from "../components/preview-chrome";
+import { previewLocale } from "../components/preview-locale";
 import {
   Body,
   Button,
@@ -84,7 +85,7 @@ SpaceInviteEmail.PreviewProps = {
   inviterName: "John Smith",
   spaceRole: "member",
   inviteUrl: "https://rallly.co/invite/abc123",
-  locale: "en",
+  locale: previewLocale,
   chrome: previewChrome,
 } as SpaceInviteEmailProps;
 
