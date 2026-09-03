@@ -111,19 +111,22 @@ not by picking a side mechanically:
    - A conflict confined to a lockfile (`pnpm-lock.yaml`) or other generated
      output can just be regenerated (`pnpm install`) rather than merged by hand.
    - **Needing to write new code — not just re-apply an existing diff — is
-     not itself a reason to escalate.** If a customization's supporting piece
-     was deleted or restructured (not just moved), investigate what it would
-     take to rebuild the same behavior before concluding it's too hard: check
-     whether upstream now does this natively (then it's an obsolescence
-     candidate, 2e — flag, don't rebuild), and whether the pieces needed to
-     reconstruct it still exist elsewhere in the codebase. Concrete case:
-     issue #62's OIDC logout customization needs a backend route
-     (`/api/auth/oidc-logout`) that was deleted, but everything it needs
-     (the OIDC discovery document's `end_session_endpoint`, and the
-     provider's `idToken` that Better Auth's `generic-oauth` plugin already
-     stores on the linked account) still exists — this is real work, but a
-     bounded, well-defined rebuild, not ambiguity. That's still a "resolve
-     it" case, not an escalation.
+     not itself a reason to escalate.** If part of a customization looks
+     missing after the rebase, check what's actually true before assuming
+     something was deleted: a file the customization itself *adds* (not one
+     it modifies) survives every rebase unconflicted, same as any other new
+     file — it doesn't need "rebuilding" at all, it's just already there.
+     The only real conflicts happen where upstream modified the *same*
+     existing code the customization also touches. Concrete case: issue #62's
+     OIDC logout customization looked at first like it needed a rebuilt
+     backend route (`/api/auth/oidc-logout`) — it didn't; that route is the
+     customization's own file, applied cleanly the whole time. The actual
+     (and only) conflict was in `auth-client.ts`'s `signOut()`, which
+     upstream had also modified. Once genuinely rebuilding something is
+     needed, check whether upstream now does it natively (then it's an
+     obsolescence candidate, 2e — flag, don't rebuild) and whether the
+     pieces to reconstruct it still exist elsewhere in the codebase — that's
+     real work, but still bounded and resolvable, not ambiguity.
    - If, after actually engaging with the issue's intent — including
      checking whether the pieces to rebuild a missing capability actually
      exist — the correct resolution is still genuinely unclear (not just
