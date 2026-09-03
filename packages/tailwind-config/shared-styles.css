@@ -27,7 +27,7 @@
   --destructive: var(--color-rose-600);
   --destructive-foreground: var(--color-rose-100);
 
-  --background: #E5F3EB;
+  --background: #e5f3eb;
   --foreground: #003221;
 
   --accent: oklch(0.552 0.016 285.938 / 0.1);
@@ -56,7 +56,7 @@
   --sidebar-foreground: #003221;
   --sidebar-border: var(--color-gray-200);
 
-  --sidebar-accent: #E5F3EB;
+  --sidebar-accent: #e5f3eb;
   --sidebar-accent-foreground: #003221;
 }
 
