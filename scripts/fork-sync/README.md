@@ -82,6 +82,16 @@ review on the release branch. A branch that fails to rebase cleanly, fails
 self-review, or fails CI becomes a **draft** PR instead and is left for a
 human.
 
+A draft PR *is* the escalation channel, not an internal detail — it's how a
+blocked branch surfaces for a human to see. Once a PR is draft, the runbook
+leaves it alone on every future run: it will not keep retrying to resolve it
+on its own initiative. It stays untouched until a human either resolves it
+directly (push a fix and mark it ready for review) or explicitly instructs a
+future run how to resolve it. A PR no longer being a draft is itself the
+signal that hands control back to the runbook — from that point it treats
+the branch like any other: check CI, merge once green. The runbook never
+flips a PR's draft status itself in either direction.
+
 Note: merging a PR from Claude Code's own sandbox requires an explicit
 `autoMode.allow` entry in `.claude/settings.local.json` (personal,
 gitignored) — Claude Code's own safety classifier blocks PR-merge API calls
