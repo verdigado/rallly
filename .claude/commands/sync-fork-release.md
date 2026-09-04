@@ -30,7 +30,14 @@ they're missing, stop and report that instead of guessing at credentials.
 
 Use `$TOKEN` explicitly, per call:
 - REST API: `Authorization: Bearer $TOKEN` header.
-- git push/fetch to verdigado/rallly: `git -c http.extraheader="AUTHORIZATION: bearer $TOKEN" push https://github.com/verdigado/rallly.git <refspec>` (the extraheader form avoids the token ending up embedded in a remote URL or process argv).
+- git push/fetch to verdigado/rallly: GitHub's git-over-HTTPS smart protocol
+  needs **Basic**, not Bearer, auth — a Bearer header gets a 401, and git then
+  falls back to its interactive credential prompt, which hangs/fails
+  unattended. Use:
+  `git -c http.extraheader="Authorization: Basic $(printf 'x-access-token:%s' "$TOKEN" | base64 -w0)" push https://github.com/verdigado/rallly.git <refspec>`
+  (the extraheader form avoids the token ending up embedded in a remote URL
+  or process argv — never fall back to a `https://x-access-token:$TOKEN@...`
+  URL to work around an auth failure; fix the header instead).
 
 Reads of the public upstream repo `lukevella/rallly` need **no auth** — never
 send `$TOKEN` to any host other than `api.github.com`/`github.com` for
@@ -40,7 +47,7 @@ send `$TOKEN` to any host other than `api.github.com`/`github.com` for
 
 1. Fetch upstream: `git fetch https://github.com/lukevella/rallly.git main` (public, unauthenticated).
 2. Push it into verdigado/rallly `main`:
-   `git push -c http.extraheader="AUTHORIZATION: bearer $TOKEN" https://github.com/verdigado/rallly.git FETCH_HEAD:main`
+   `git -c http.extraheader="Authorization: Basic $(printf 'x-access-token:%s' "$TOKEN" | base64 -w0)" push https://github.com/verdigado/rallly.git FETCH_HEAD:main`
    Only `main`. Never push anything else here.
 3. Get upstream's latest release: `GET https://api.github.com/repos/lukevella/rallly/releases/latest` (unauthenticated). Note its tag, e.g. `v4.13.1`.
 4. List existing release branches: `GET https://api.github.com/repos/verdigado/rallly/git/matching-refs/heads/release/` (send `Authorization: Bearer $TOKEN` since this is a verdigado/rallly read) and find the highest `release/<semver>-fork` branch.
