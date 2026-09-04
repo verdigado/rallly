@@ -96,9 +96,25 @@ merges happen via the REST API, which doesn't update local refs, so without
 this a later branch in the loop can rebase against a stale copy and miss a
 real conflict against one merged moments ago.
 
-For each branch from 2b: if resuming an in-progress release and this
-branch's PR already merged into `release/<upstream_semver>-fork` on a prior
-run, skip it — don't re-rebase or re-merge something already done. Otherwise:
+For each branch from 2b, check whether it already has a PR against
+`release/<upstream_semver>-fork` from a prior run:
+
+- **Already merged** → skip it — don't re-rebase or re-merge something
+  already done.
+- **Open and still a draft** → skip it entirely this run. A draft PR means a
+  human hasn't acted on it yet — being blocked is exactly what makes it a
+  draft in the first place, so don't rebase, resolve, or self-review it
+  again on your own initiative; leave it exactly as is and note it's still
+  blocked in the Phase 2 summary (2f). Only touch this branch again once a
+  human has either pushed a resolution and marked the PR ready for review
+  themselves, or given explicit instructions (in this or a future run) for
+  how to resolve it.
+- **Open and no longer a draft** → a human marking it ready for review is
+  itself the signal to take back over. Skip straight to step 4's CI-check
+  and merge against its current head commit — do not redo rebase, conflict
+  resolution, or self-review; the human's action already vouches for those.
+- **No PR yet for this branch** → this is a first attempt. Run the full
+  flow below.
 
 **0. Read the issue(s) before touching anything.** The branch's linked issue
 *and any of its GitHub sub-issues* (`GET /repos/verdigado/rallly/issues/<n>/sub_issues`
@@ -303,6 +319,7 @@ closed — stating:
 ## Guardrails (apply throughout, not just where mentioned above)
 
 - **Never tag a release branch that still has any open or draft PR against it from 2b** — a tag drives real CI (image build, release draft) and implies the release is complete and working, not partially assembled.
+- Never mark a draft PR ready for review yourself, and never rebase/push/resolve a branch whose PR is already open and still draft from a prior run — a draft PR means a human needs to act, and it staying or leaving draft state is entirely their call (2c).
 - Never push to `main` except the plain fast-forward sync from upstream in Phase 1 step 2.
 - Never touch anything outside the verdigado/rallly repo — the App installation structurally can't reach anywhere else, keep it that way (never widen its install).
 - Never push a branch that still has leftover conflict markers or an otherwise broken/half-merged state — a pushed branch (merged or draft) must always be a real, complete attempt, not a checkpoint mid-resolution.
