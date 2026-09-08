@@ -97,3 +97,33 @@ Note: merging a PR from Claude Code's own sandbox requires an explicit
 gitignored) — Claude Code's own safety classifier blocks PR-merge API calls
 by default, separately from whatever GitHub itself permits. See that file's
 `autoMode.allow` entry for the exact scope of what's been allowed and why.
+
+## Troubleshooting
+
+### Portless proxy: registered app 404s even though `portless list` shows it active
+
+Self-review's visual/UI check (step 3 above) needs a real `pnpm dev` instance
+reachable at a stable HTTPS URL — that's what `pnpm proxy:start`/`portless`
+provides, and OIDC redirects during the Keycloak login check depend on that
+URL matching `NEXT_PUBLIC_BASE_URL`. If the browser 404s at that URL ("No app
+registered" / "No apps running") even though `portless list` shows the app
+correctly registered, this is a known bug in the pinned `portless@0.12.0`
+(see root `package.json`): `portless proxy start` needs port 443, so it
+self-elevates via `sudo`, and 0.12.0's elevation path doesn't forward
+`PORTLESS_STATE_DIR` — the now-root proxy defaults to reading/writing its
+route registry from `/root/.portless` while the unprivileged `next dev`
+process uses `~/.portless`. Both sides look healthy in isolation; they're
+just talking to two different registries.
+
+Fix: export the state dir before starting the proxy, so the elevated proxy
+and the unprivileged dev process share one registry:
+
+```bash
+export PORTLESS_STATE_DIR=$HOME/.portless
+pnpm proxy:start
+pnpm dev
+```
+
+Fixed upstream in `portless@0.15.3` — this workaround is only needed while
+this repo stays pinned to `0.12.0`. See
+[vercel-labs/portless#258](https://github.com/vercel-labs/portless/issues/258).
