@@ -15,6 +15,10 @@ Rallly is a meeting scheduling application built with Next.js that allows users 
 - TypeScript throughout
 - dayjs for date handling
 
+## This Fork (verdigado/rallly)
+
+Read `scripts/fork-sync/README.md` before you do anything else — it covers this fork's git push/PR credentials and upstream-sync automation.
+
 ## Development Commands
 
 ### Getting Started
