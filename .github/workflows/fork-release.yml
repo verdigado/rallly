@@ -1,0 +1,40 @@
+on:
+  push:
+    tags:
+      - "v*"
+
+name: Create Fork Release
+
+jobs:
+  build-and-release:
+    name: Create Fork Release
+    # Only our own fork release tags (v4.13.1-fork.1) build a self-hosted
+    # release artifact here. Upstream's release.yml already skips these tags
+    # via its own hyphen check, so this workflow claims them instead.
+    if: ${{ contains(github.ref_name, '-fork.') }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Create release artifact
+        run: ./scripts/create-release-artifact.sh
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: "rallly-release.tar.gz,rallly-release.tar.gz.sha256"
+          generateReleaseNotes: true
+          token: ${{ secrets.GITHUB_TOKEN }}
+          makeLatest: true
