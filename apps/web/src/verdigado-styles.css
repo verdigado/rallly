@@ -5,18 +5,18 @@
   font-style: italic;
 }
 
-body > div > div.sticky {
+.page-header {
   background-color: #005437;
   color: white;
 }
 
-body > div > div.sticky button {
+.page-header button {
   background: none !important;
   box-shadow: none !important;
   color: white !important;
 }
 
-body > div > div.sticky svg {
+.page-header svg {
   fill: white !important;
   stroke: white !important;
 }
