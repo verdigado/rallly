@@ -20,3 +20,15 @@
   fill: white !important;
   stroke: white !important;
 }
+
+.page-header [data-slot="breadcrumb-link"] {
+  color: rgb(255 255 255 / 70%) !important;
+}
+
+.page-header [data-slot="breadcrumb-link"]:hover {
+  color: white !important;
+}
+
+.page-header [data-slot="breadcrumb-page"] {
+  color: white !important;
+}
