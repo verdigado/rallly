@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
     "@rallly/tailwind-config",
     "@rallly/posthog",
     "@rallly/emails",
+    "@rallly/languages",
   ],
   assetPrefix: process.env.NEXT_PUBLIC_BASE_URL,
   webpack(config) {
