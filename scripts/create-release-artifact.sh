@@ -37,6 +37,23 @@ cp packages/database/prisma.config.ts ./release-artifact/
 echo "🔧 Modifying prisma.config.ts for production..."
 sed -i 's|../../.env|.env|' ./release-artifact/prisma.config.ts
 
+# Bundle a working `prisma` CLI for migrations. The standalone server output
+# only traces the runtime `@prisma/client` dependency actually imported by
+# app code, not the `prisma` CLI package (a devDependency, never imported at
+# runtime) — so a bare `npx prisma migrate deploy` on the deployed artifact
+# has nothing pinned to fall back on and resolves whatever npm's `latest`
+# dist-tag happens to be at that moment, which silently breaks the moment
+# that tag moves to an incompatible major version. Installing it directly
+# into the artifact, pinned to the exact range this build was tested
+# against, makes migration a self-contained `node_modules/.bin/prisma
+# migrate deploy` with no registry resolution step at deploy time.
+echo "📌 Bundling a self-contained Prisma CLI for migrations..."
+PRISMA_RANGE=$(node -p "require('./packages/database/package.json').devDependencies.prisma")
+(
+  cd ./release-artifact
+  npm install "prisma@${PRISMA_RANGE}" --no-save --silent
+)
+
 echo "🗜️ Compressing the artifact..."
 tar -czf rallly-release.tar.gz -C ./release-artifact .
 
