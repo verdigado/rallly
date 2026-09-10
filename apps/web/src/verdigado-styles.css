@@ -5,18 +5,30 @@
   font-style: italic;
 }
 
-body > div > div.sticky {
+.page-header {
   background-color: #005437;
   color: white;
 }
 
-body > div > div.sticky button {
+.page-header button {
   background: none !important;
   box-shadow: none !important;
   color: white !important;
 }
 
-body > div > div.sticky svg {
+.page-header svg {
   fill: white !important;
   stroke: white !important;
+}
+
+.page-header [data-slot="breadcrumb-link"] {
+  color: rgb(255 255 255 / 70%) !important;
+}
+
+.page-header [data-slot="breadcrumb-link"]:hover {
+  color: white !important;
+}
+
+.page-header [data-slot="breadcrumb-page"] {
+  color: white !important;
 }

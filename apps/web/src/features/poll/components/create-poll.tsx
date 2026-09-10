@@ -173,7 +173,7 @@ export const CreatePoll = ({ nav }: { nav?: React.ReactNode }) => {
 
   return (
     <Form {...form}>
-      <header className="sticky top-0 z-20 bg-gray-100/90 p-3 backdrop-blur-md xl:bg-transparent xl:backdrop-blur-none dark:bg-gray-900/90 dark:xl:bg-transparent">
+      <header className="page-header sticky top-0 z-20 border-b bg-primary p-3 backdrop-blur-lg dark:bg-gray-900/90">
         <div className="flex items-center justify-between gap-x-4">
           <div className="flex min-w-0 flex-1 items-center">
             {/* The back link is not prefetched: a guest gets bounced from "/"
@@ -186,7 +186,10 @@ export const CreatePoll = ({ nav }: { nav?: React.ReactNode }) => {
               <Link
                 href="/"
                 prefetch={false}
-                className={buttonVariants({ variant: "ghost" })}
+                className={cn(
+                  buttonVariants({ variant: "ghost" }),
+                  "text-white hover:bg-white/10 hover:text-white",
+                )}
               >
                 <ArrowLeftIcon className="size-4" />
                 <Trans i18nKey="back" defaults="Back" />

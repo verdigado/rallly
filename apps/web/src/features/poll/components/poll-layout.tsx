@@ -34,7 +34,7 @@ const Layout = ({ children }: React.PropsWithChildren) => {
   const pathname = usePathname();
   return (
     <div className="page-bg-gray-100 h-dvh overflow-auto dark:bg-gray-900">
-      <div className="sticky top-0 z-40 border-b bg-primary p-3 backdrop-blur-lg sm:flex-row dark:bg-gray-900/90">
+      <div className="page-header sticky top-0 z-40 border-b bg-primary p-3 backdrop-blur-lg sm:flex-row dark:bg-gray-900/90">
         <div className="flex justify-between">
           <div className="flex min-w-0 items-center gap-x-2.5">
             <Breadcrumb className="min-w-0">
