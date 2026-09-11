@@ -5,7 +5,11 @@
 // Required env vars:
 //   GITHUB_APP_ID                 - the App's numeric ID
 //   GITHUB_APP_INSTALLATION_ID    - the installation's numeric ID
-//   GITHUB_APP_PRIVATE_KEY_PATH   - path to the App's .pem private key
+//   GITHUB_APP_PRIVATE_KEY_PATH   - path to the App's .pem private key, or
+//   GITHUB_APP_PRIVATE_KEY_B64    - the same .pem, base64-encoded, for
+//                                   environments with no filesystem path for
+//                                   a secret (e.g. a Claude Code cloud
+//                                   routine's environment variables)
 //
 // Prints the token, and only the token, to stdout. Everything else goes to
 // stderr so `TOKEN=$(node get-installation-token.mjs)` works cleanly.
@@ -45,15 +49,18 @@ async function main() {
   const appId = process.env.GITHUB_APP_ID;
   const installationId = process.env.GITHUB_APP_INSTALLATION_ID;
   const privateKeyPath = process.env.GITHUB_APP_PRIVATE_KEY_PATH;
+  const privateKeyB64 = process.env.GITHUB_APP_PRIVATE_KEY_B64;
 
-  if (!appId || !installationId || !privateKeyPath) {
+  if (!appId || !installationId || !(privateKeyPath || privateKeyB64)) {
     console.error(
-      "Missing one of GITHUB_APP_ID, GITHUB_APP_INSTALLATION_ID, GITHUB_APP_PRIVATE_KEY_PATH",
+      "Missing GITHUB_APP_ID, GITHUB_APP_INSTALLATION_ID, and either GITHUB_APP_PRIVATE_KEY_PATH or GITHUB_APP_PRIVATE_KEY_B64",
     );
     process.exit(1);
   }
 
-  const privateKeyPem = readFileSync(privateKeyPath, "utf8");
+  const privateKeyPem = privateKeyB64
+    ? Buffer.from(privateKeyB64, "base64").toString("utf8")
+    : readFileSync(privateKeyPath, "utf8");
   const jwt = buildAppJwt(appId, privateKeyPem);
 
   const response = await fetch(

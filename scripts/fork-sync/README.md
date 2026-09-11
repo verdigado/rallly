@@ -44,11 +44,13 @@ git/API writes the runbook makes — those always go through the
 
 ## Credentials this needs
 
-Three environment variables, none of which are secrets except the last:
+Three environment variables, none of which are secrets except the private key:
 
 - `GITHUB_APP_ID` — the `rallly-fork-bot` App's numeric App ID (not its name/slug)
 - `GITHUB_APP_INSTALLATION_ID` — the numeric ID of its installation on verdigado/rallly
-- `GITHUB_APP_PRIVATE_KEY_PATH` — path to its private key `.pem` file (the actual secret)
+- The private key `.pem`, as either:
+  - `GITHUB_APP_PRIVATE_KEY_PATH` — a filesystem path to it (used locally/interactively, where the key is bind-mounted or otherwise present on disk)
+  - `GITHUB_APP_PRIVATE_KEY_B64` — the same `.pem` contents, base64-encoded into a single-line value. This is the one to use anywhere there's no filesystem path for a secret file — e.g. a Claude Code cloud routine's environment variables (or its API-credential slot, where available), which only accept plain values, not mounted files.
 
 Setting these up is the responsibility of whatever environment runs the
 runbook — never hardcode them into a file that could end up committed. For a
