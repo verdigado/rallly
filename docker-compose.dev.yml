@@ -82,6 +82,18 @@ services:
     entrypoint: ["sh", "-c", "aws --endpoint-url http://garage:3900 s3api put-bucket-cors --bucket rallly --cors-configuration file:///cors.json"]
     restart: "no"
 
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    restart: unless-stopped
+    command: start-dev --import-realm
+    ports:
+      - "8080:8080"
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    volumes:
+      - ./.keycloak/realm-export.json:/opt/keycloak/data/import/realm.json:ro
+
 volumes:
   db-data:
     driver: local

@@ -1,0 +1,32 @@
+{
+  "name": "rallly",
+  "image": "mcr.microsoft.com/devcontainers/base:debian",
+
+  "features": {
+    "ghcr.io/anthropics/devcontainer-features/claude-code:latest": {},
+    "ghcr.io/devcontainers/features/node:latest": {
+      "version": "24"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:latest": {
+      "moby": false
+    }
+  },
+
+  "mounts": [
+    "source=claude-code-data,target=/home/vscode/.claude,type=volume",
+    "source=${localEnv:HOME}/.ssh/id_claude_signing,target=/home/vscode/.ssh/id_claude_signing,type=bind",
+    "source=${localEnv:HOME}/.ssh/fork-sync-app-key.pem,target=/home/vscode/.github-app/fork-sync-installation-key.pem,type=bind"
+  ],
+
+  "containerEnv": {
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}",
+    "GH_TOKEN": "${localEnv:GH_TOKEN}",
+    "GITHUB_APP_ID": "${localEnv:FORK_SYNC_GITHUB_APP_ID}",
+    "GITHUB_APP_INSTALLATION_ID": "${localEnv:FORK_SYNC_GITHUB_APP_INSTALLATION_ID}",
+    "GITHUB_APP_PRIVATE_KEY_PATH": "/home/vscode/.github-app/fork-sync-installation-key.pem"
+  },
+
+  "postCreateCommand": "corepack enable && sudo chown -R --reference=\"$(npm -g config get prefix)/lib/node_modules\" \"$(npm -g config get prefix)/lib/node_modules/@anthropic-ai\" 2>/dev/null || true",
+
+  "remoteUser": "vscode"
+}

@@ -1,0 +1,43 @@
+{
+  "realm": "gruenes-netz",
+  "enabled": true,
+  "sslRequired": "none",
+  "clients": [
+    {
+      "clientId": "rallly",
+      "enabled": true,
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "secret": "x3HQjqapmfqwKbHLT7HUVqeItWSx0GoK",
+      "redirectUris": [
+        "https://web.rallly.localhost:1355/api/auth/callback/oidc",
+        "https://web.rallly.test:1355/api/auth/callback/oidc",
+        "http://localhost:3000/api/auth/callback/oidc"
+      ],
+      "webOrigins": [
+        "https://web.rallly.localhost:1355",
+        "https://web.rallly.test:1355",
+        "http://localhost:3000"
+      ]
+    }
+  ],
+  "users": [
+    {
+      "username": "devuser",
+      "enabled": true,
+      "emailVerified": true,
+      "email": "devuser@example.com",
+      "firstName": "Dev",
+      "lastName": "User",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "devpassword",
+          "temporary": false
+        }
+      ]
+    }
+  ]
+}
